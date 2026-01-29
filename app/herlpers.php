@@ -2,6 +2,8 @@
 
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+
 
 if (!function_exists('multiLanguageSave')) {
     function multiLanguageSave($model, array $validated)
@@ -49,32 +51,43 @@ if (!function_exists('errorResponse')) {
     }
 }
 
-if (!function_exists('paginatedResponse')) {
-    function paginatedResponse(LengthAwarePaginator $pagintor, $message = 'Data retrieved successfully', $code = 200)
-    {
-        return response()->json([
-            'success' => true,
-            'message' => $message,
-            'data' => $pagintor->items(),
-            'meta' => [
-                'current_page' => $pagintor->currentPage(),
-                'per_page' => $pagintor->perPage(),
-                'total' => $pagintor->total(),
-                'last_page' => $pagintor->lastPage(),
-                'from' => $pagintor->firstItem(),
-                'to' => $pagintor->lastItem()
-            ],
-            'links' => [
-                'first' => $pagintor->url(1),
-                'last' => $pagintor->url($pagintor->lastPage()),
-                'prev' => $pagintor->previousPageUrl(),
-                'next' => $pagintor->nextPageUrl(),
-            ],
 
-            'code' => $code,
-        ], $code);
+
+function paginatedResponse($resourceOrPaginator, $message = 'Data retrieved successfully', $code = 200)
+{
+    if ($resourceOrPaginator instanceof AnonymousResourceCollection) {
+        $paginator = $resourceOrPaginator->resource;
+        $data = $resourceOrPaginator->collection;
+    } elseif ($resourceOrPaginator instanceof LengthAwarePaginator) {
+        $paginator = $resourceOrPaginator;
+        $data = $paginator->items();
+    } else {
+        throw new InvalidArgumentException('paginatedResponse expects paginator or resource collection');
     }
+
+    return response()->json([
+        'success' => true,
+        'message' => $message,
+        'data' => $data,
+        'meta' => [
+            'current_page' => $paginator->currentPage(),
+            'per_page'     => $paginator->perPage(),
+            'total'        => $paginator->total(),
+            'last_page'    => $paginator->lastPage(),
+            'from'         => $paginator->firstItem(),
+            'to'           => $paginator->lastItem(),
+        ],
+        'links' => [
+            'first' => $paginator->url(1),
+            'last'  => $paginator->url($paginator->lastPage()),
+            'prev'  => $paginator->previousPageUrl(),
+            'next'  => $paginator->nextPageUrl(),
+        ],
+        'code' => $code,
+    ], $code);
 }
+
+
 
 if (!function_exists('validationErrorResponse')) {
     function validationErrorResponse($errors, $message = 'Validation failed', $code = 422)

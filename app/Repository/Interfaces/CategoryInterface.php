@@ -17,4 +17,5 @@ interface CategoryInterface
 
     public function ajax($request);
     public function archiveAjax($request);
+     public function archive($request);
 }

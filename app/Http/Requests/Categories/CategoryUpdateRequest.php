@@ -24,6 +24,10 @@ class CategoryUpdateRequest extends FormRequest
         return [
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'category_id' => 'nullable|exists:categories,id',
+            'ar' => 'required|array',
+            'en' => 'required|array',
+            'fr' => 'required|array',
+
             'ar.*' => 'required|string',
             'en.*' => 'required|string',
             'fr.*' => 'required|string',

@@ -24,7 +24,7 @@ class Category extends Model implements TranslatableContract
 
     public function parent() // parent
     {
-        $this->belongsTo(Category::class, 'category_id', 'id');
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
 }

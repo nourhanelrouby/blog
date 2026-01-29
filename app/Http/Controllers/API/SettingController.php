@@ -21,13 +21,16 @@ class SettingController extends Controller
     public function index()
     {
         $settings = Setting::first();
-        if(empty($setting)){
-            return successResponse([],'No Data Found!',200);
+
+        if (empty($settings)) {  
+            return successResponse([], 'No Data Found!', 200);
         }
+
         $settings = new SettingListResource($settings);
 
-        return successResponse($settings, 'Settings retrvied successfully!');
+        return successResponse($settings, 'Settings retrieved successfully!');
     }
+
 
     public function update(SettingUpdateRequest $request)
     {

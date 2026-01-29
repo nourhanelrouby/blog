@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\SettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,3 +23,10 @@ Route::prefix('settings')->middleware('locale')->controller(SettingController::c
     Route::get('/', 'index');
     Route::put('/update', 'update');
 });
+
+// Categories
+Route::get('/categories/archive', [CategoryController::class, 'archive']);
+Route::put('/categories/restore/{id}', [CategoryController::class, 'restore']);
+Route::delete('/categories/delete/{category}', [CategoryController::class, 'delete']);
+Route::apiResource('categories', CategoryController::class);
+

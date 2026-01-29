@@ -23,6 +23,7 @@ class SettingListResource extends JsonResource
             'linkedin'  => $this->linkedin,
             'phone'     => $this->phone,
             'email'     => $this->email,
+            'updated_at'=>$this->updated_at
         ];
     }
 }

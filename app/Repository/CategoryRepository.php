@@ -10,7 +10,7 @@ use Yajra\DataTables\Facades\DataTables;
 class CategoryRepository implements CategoryInterface
 {
 
-    public function ajax( $request)
+    public function ajax($request)
     {
         $data = Category::query()->with('translations');
 
@@ -39,7 +39,7 @@ class CategoryRepository implements CategoryInterface
             ->make(true);
     }
 
-    public function archiveAjax( $request)
+    public function archiveAjax($request)
     {
         $data = Category::onlyTrashed()->with('translations')->select('categories.*');
         return Datatables::of($data)
@@ -57,12 +57,12 @@ class CategoryRepository implements CategoryInterface
             })
             ->addColumn('image', function ($row) {
                 if ($row->image) {
-                     $url = asset('storage/' . $row->image);
+                    $url = asset('storage/' . $row->image);
                     return "<img src='{$url}' width='50' height='50'/>";
                 }
                 return 'N/A';
             })
-           ->rawColumns(['action', 'image'])
+            ->rawColumns(['action', 'image'])
             ->make(true);
     }
 
@@ -70,13 +70,13 @@ class CategoryRepository implements CategoryInterface
     {
         $validated = $request->validated();
         if ($request->hasFile('image')) {
-              $validated['image'] = $request->file('image')->store('categories', 'public');
+            $validated['image'] = $request->file('image')->store('categories', 'public');
         }
 
 
         $category = Category::create([
-            'image' => $validated['image'],
-            'category_id' => $validated['category_id'],
+            'image' => $validated['image'] ?? null,
+            'category_id' => $validated['category_id'] ?? null,
         ]);
         multiLanguageSave($category, $validated);
         return $category;
@@ -92,12 +92,12 @@ class CategoryRepository implements CategoryInterface
                 Storage::disk('public')->delete($category->image);
             }
             $validated['image'] = $request->file('image')->store('categories', 'public');
-        }else{
+        } else {
             $validated['image'] = $category->image;
         }
         $category->update([
-            'image' => $validated['image'],
-            'category_id' => $validated['category_id'],
+            'image' => $validated['image'] ?? null,
+            'category_id' => $validated['category_id'] ?? null,
         ]);
         multiLanguageSave($category, $validated);
         return $category;
@@ -112,6 +112,9 @@ class CategoryRepository implements CategoryInterface
     public function restore($category)
     {
         $category = Category::withTrashed($category);
+        if (empty($category)) {
+            return false;
+        }
         $category->restore();
         return true;
     }
@@ -123,5 +126,17 @@ class CategoryRepository implements CategoryInterface
         }
         $category->forceDelete();
         return true;
+    }
+
+    public function archive($request)
+    {
+        $per_page = $request->per_page;
+
+        $categories = Category::onlyTrashed()->with('sub_categories')
+            ->paginate($per_page);
+        if ($categories->isEmpty()) {
+            return false;
+        }
+        return $categories;
     }
 }

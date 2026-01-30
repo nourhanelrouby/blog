@@ -14,6 +14,7 @@ interface UserInterface
     public function restore($user);
 
     public function delete($user);
-    public function ajax( $request);
-    public function archiveAjax( $request);
+    public function ajax($request);
+    public function archiveAjax($request);
+    public function archive($request);
 }

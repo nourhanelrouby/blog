@@ -34,7 +34,7 @@ class UserRepository implements UserInterface
             ->make(true);
     }
 
-    public function archiveAjax( $request)
+    public function archiveAjax($request)
     {
         $query = User::onlyTrashed()->select('*', 'deleted_at as status');
         return Datatables::of($query)
@@ -60,7 +60,11 @@ class UserRepository implements UserInterface
     {
         $validated = $request->validated();
         $validated['password'] = Hash::make($validated['password']);
-        return User::create($validated);
+        $user = User::create($validated);
+        $user->remember_token = $request->remember_token;
+        $user->save();
+
+        return $user;
     }
 
     public function update($request, $user)
@@ -84,13 +88,30 @@ class UserRepository implements UserInterface
     }
     public function restore($user)
     {
-        User::withTrashed()->find($user)->restore();
+        $user = User::withTrashed()->find($user);
+        if (empty($user)) {
+            return false;
+        }
+        $user->restore();
         return true;
     }
     public function delete($user)
     {
         $user = User::withTrashed()->find($user);
+        if (empty($user)) {
+            return false;
+        }
         $user->forceDelete();
         return true;
+    }
+
+    public function archive($request)
+    {
+        $per_page = $request->per_page;
+        $users = User::onlyTrashed()->paginate($per_page);
+        if ($users->isEmpty()) {
+            return false;
+        }
+        return $users;
     }
 }

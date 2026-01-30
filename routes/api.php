@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\SettingController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,3 +31,8 @@ Route::put('/categories/restore/{id}', [CategoryController::class, 'restore']);
 Route::delete('/categories/delete/{category}', [CategoryController::class, 'delete']);
 Route::apiResource('categories', CategoryController::class);
 
+// Users
+Route::get('/users/archive', [UserController::class, 'archive']);
+Route::delete('/users/delete/{id}', [UserController::class, 'delete']);
+Route::put('/users/restore/{id}', [UserController::class, 'restore']);
+Route::apiResource('users', UserController::class);

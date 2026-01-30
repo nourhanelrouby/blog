@@ -22,13 +22,18 @@ class PostStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ar.*'=>'required|string',
-            'en.*'=>'required|string',
-            'fr.*'=>'required|string',
+            'ar' => 'required|array',
+            'en' => 'required|array',
+            'fr' => 'required|array',
+
+            'ar.*' => 'required|string',
+            'en.*' => 'required|string',
+            'fr.*' => 'required|string',
+            
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'category_id' => 'required|exists:categories,id',
-            'user_id'=>'required|exists:users,id',
-             'tags' => 'nullable|array', 
+            'user_id' => 'required|exists:users,id',
+            'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id'
         ];
     }

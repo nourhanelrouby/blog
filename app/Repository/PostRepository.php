@@ -11,7 +11,7 @@ class PostRepository implements PostInterface
 {
     public function ajax($request)
     {
-        $query = Post::query()->with(['user','category','tags','translations']);
+        $query = Post::query()->with(['user', 'category', 'tags', 'translations']);
 
         return DataTables::of($query)
             ->addIndexColumn()
@@ -41,7 +41,7 @@ class PostRepository implements PostInterface
                 }
                 return 'N/A';
             })
-             ->rawColumns(['action', 'image'])
+            ->rawColumns(['action', 'image'])
             ->make(true);
     }
 
@@ -50,15 +50,15 @@ class PostRepository implements PostInterface
     {
         $validated =  $request->validated();
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->image->store('posts','public');
+            $validated['image'] = $request->image->store('posts', 'public');
         }
 
         $post = Post::create($validated);
-         if($request->has('tags')){
+        if ($request->has('tags')) {
             $post->tags()->attach($request->tags);
         }
-        multiLanguageSave($post,$validated);
-        return true;
+        multiLanguageSave($post, $validated);
+        return $post;
     }
 
     public function update($request, $post)
@@ -68,24 +68,24 @@ class PostRepository implements PostInterface
             if ($post->image) {
                 Storage::disk('public')->delete($post->image);
             }
-          $validated['image'] = $request->image->store('posts','public');
+            $validated['image'] = $request->image->store('posts', 'public');
         }
 
         $post->update($validated);
-         if($request->has('tags')){
-            $post->tags()->sync($request->tags??[]);
+        if ($request->has('tags')) {
+            $post->tags()->sync($request->tags ?? []);
         }
-        multiLanguageSave($post,$validated);
+        multiLanguageSave($post, $validated);
         return $post;
     }
 
 
-    public function destroy( $post)
+    public function destroy($post)
     {
         if ($post->image) {
             Storage::disk('public')->delete($post->image);
         }
-         if($post->tags){
+        if ($post->tags) {
             $post->tags()->detach();
         }
         $post->delete();

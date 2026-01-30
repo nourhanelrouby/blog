@@ -31,6 +31,6 @@ class Post extends Model implements TranslatableContract
     }
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'post_tags','tag_id', 'post_id');
+        return $this->belongsToMany(Tag::class, 'post_tags');
     }
 }

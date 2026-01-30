@@ -22,13 +22,15 @@ class PostUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ar.*'=>'required|string',
-            'en.*'=>'required|string',
-            'fr.*'=>'required|string',
+
+            'ar.*' => 'required|string',
+            'en.*' => 'required|string',
+            'fr.*' => 'required|string',
+
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'category_id' => 'required|exists:categories,id',
-            'user_id'=>'required|exists:users,id',
-           'tags' => 'nullable|array',
+            'category_id' => 'nullable|exists:categories,id',
+            'user_id' => 'nullable|exists:users,id',
+            'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id'
         ];
     }

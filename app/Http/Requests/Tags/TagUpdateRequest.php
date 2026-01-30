@@ -22,9 +22,11 @@ class TagUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'en.*'=>'required|string|max:255',
-            'en.*'=>'required|string|max:255',
-            'fr.*'=>'required|string|max:255',
+        
+
+            'ar.*' => 'required|string|max:255',
+            'en.*' => 'required|string|max:255',
+            'fr.*' => 'required|string|max:255',
         ];
     }
 }

@@ -22,9 +22,13 @@ class TagStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ar.*'=>'required|string|max:255',
-            'en.*'=>'required|string|max:255',
-            'fr.*'=>'required|string|max:255',
+            'ar' => 'required|array',
+            'en' => 'required|array',
+            'fr' => 'required|array',
+
+            'ar.*' => 'required|string|max:255',
+            'en.*' => 'required|string|max:255',
+            'fr.*' => 'required|string|max:255',
         ];
     }
 }
